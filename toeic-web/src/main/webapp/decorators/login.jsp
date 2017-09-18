@@ -52,9 +52,9 @@
 
 <!-- page specific plugin scripts -->
 
-<!--[if lte IE 8]>
+
 <script src="<c:url value='/template/admin/js/excanvas.min.js'/>"></script>
-<![endif]-->
+
 <script src="<c:url value='/template/admin/js/jquery-ui.custom.min.js'/>"></script>
 <script src="<c:url value='/template/admin/js/jquery.ui.touch-punch.min.js'/>"></script>
 <script src="<c:url value='/template/admin/js/jquery.easypiechart.min.js'/>"></script>
