@@ -36,12 +36,12 @@ public class LoginController extends HttpServlet {
             if(userService.isUserExist(pojo) != null){
                 if(userService.findRoleByUser(pojo) != null && userService.findRoleByUser(pojo).getRoleDTO() != null){
                     if(userService.findRoleByUser(pojo).getRoleDTO().getName().equals(WebConstaint.ROLE_ADMIN)) {
-                        request.setAttribute(WebConstaint.ALERT,WebConstaint.TYPE_SUCCESS);
-                        request.setAttribute(WebConstaint.MESSAGE_RESPONSE,"Admin");
+                        response.sendRedirect("/admin-home.html");
+                        return;
                     }
                     else if(userService.findRoleByUser(pojo).getRoleDTO().getName().equals(WebConstaint.ROLE_USER)){
-                        request.setAttribute(WebConstaint.ALERT,WebConstaint.TYPE_SUCCESS);
-                        request.setAttribute(WebConstaint.MESSAGE_RESPONSE,"User");
+                        response.sendRedirect("home.html");
+                        return;
                     }
                 }
 

@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="<c:url value='/template/admin/assets/css/font-awesome.min.css'/>"/>
     <!-- page specific plugin styles -->
     <!-- text fonts -->
+    <link rel="stylesheet" href="<c:url value='/template/admin/font-awesome/4.5.0/css/font-awesome.min.css' />" />
     <link rel="stylesheet" href="<c:url value='/template/admin/assets/fonts/fonts.googleapis.com.css'/>"/>
     <!-- ace styles -->
     <link rel="stylesheet" href="<c:url value='/template/admin/assets/css/ace.min.css'/>"/>
