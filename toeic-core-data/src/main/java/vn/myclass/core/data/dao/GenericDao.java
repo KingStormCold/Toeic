@@ -14,6 +14,6 @@ public interface GenericDao<ID extends Serializable, T> {
     T update(T entity);
     void save(T entity);
     T findById(ID id);
-    Object[] finByProperty(String property, Object value, String sortExpression, String sortDirection);
+    Object[] finByProperty(String property, Object value, String sortExpression, String sortDirection, Integer offset, Integer limit);
     Integer delete(List<ID> ids);
 }

@@ -112,8 +112,8 @@ public class AbstractDao<ID extends Serializable,T> implements GenericDao<ID,T> 
         return result;
     }
 
-
-    public Object[] finByProperty(String property, Object value, String sortExpression, String sortDirection) {
+//limit là số item cần hiển thị trong 1 trang
+    public Object[] finByProperty(String property, Object value, String sortExpression, String sortDirection,Integer offset, Integer limit) {
         List<T> list = new ArrayList<T>();
         Session session = HibernateUtil.getSesstionFactory().openSession();
         Transaction transaction = session.beginTransaction();
@@ -132,6 +132,12 @@ public class AbstractDao<ID extends Serializable,T> implements GenericDao<ID,T> 
             Query query1 = session.createQuery(sql1.toString());
             if(value !=  null){
                 query1.setParameter("value", value);
+            }
+            if(offset != null && offset >= 0){
+                query1.setFirstResult(offset);
+            }
+            if(limit != null && limit > 0){
+                query1.setMaxResults(limit);
             }
             list = query1.list();
 

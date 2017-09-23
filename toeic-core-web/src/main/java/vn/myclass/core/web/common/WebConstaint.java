@@ -10,4 +10,6 @@ public class WebConstaint {
     public static final String TYPE_ERROR = "danger";
     public static final String ROLE_ADMIN = "ADMIN";
     public static final String ROLE_USER = "USER";
+    public static final String FROM_ITEM = "item";
+    public static final String LIST_ITEM = "items";
 }
