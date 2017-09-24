@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by TuanKul on 9/13/2017.
@@ -113,25 +114,46 @@ public class AbstractDao<ID extends Serializable,T> implements GenericDao<ID,T> 
     }
 
 //limit là số item cần hiển thị trong 1 trang
-    public Object[] finByProperty(String property, Object value, String sortExpression, String sortDirection,Integer offset, Integer limit) {
+
+    public Object[] finByProperty(Map<String, Object> property, String sortExpression, String sortDirection, Integer offset, Integer limit) {
         List<T> list = new ArrayList<T>();
         Session session = HibernateUtil.getSesstionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         Object totalItem = 0;
+        String[] params = new String[property.size()];
+        Object[] values = new Object[property.size()];
+        int i = 0;
+        for(Map.Entry item:property.entrySet()) {
+            params[i] = (String) item.getKey();
+            values[i] = item.getValue();
+            i++;
+        }
         try {
             // from UserEntity where property= : value order by sortExpression sortDirection
             StringBuilder sql1 = new StringBuilder("from ");
             sql1.append(getPersistenceClassName());
-            if(property != null & value != null) {
-                sql1.append(" where ").append(property).append("= :value");
+            if(property.size() > 0 ) {
+                for(int j = 0; j < params.length ; j++){
+                    if(j == 0){
+                        sql1.append(" where ").append(params[j]).append("= :"+params[j]+"");
+                    }
+                    else {
+                        sql1.append(" and ").append(params[j]).append("= :"+params[j]+"");
+                    }
+                }
             }
+            /*if(property != null & value != null) {
+                sql1.append(" where ").append(property).append("= :value");
+            }*/
             if(sortExpression !=null && sortDirection != null) {
                 sql1.append(" order by ").append(sortExpression);
                 sql1.append(" " + (sortDirection.equals(CoreConstant.SORT_ASC)?"asc":"desc"));
             }
             Query query1 = session.createQuery(sql1.toString());
-            if(value !=  null){
-                query1.setParameter("value", value);
+            if(property.size() > 0){
+                for(int j = 0; j < params.length ; j++){
+                    query1.setParameter(params[j],values[j]);
+                }
             }
             if(offset != null && offset >= 0){
                 query1.setFirstResult(offset);
@@ -140,17 +162,26 @@ public class AbstractDao<ID extends Serializable,T> implements GenericDao<ID,T> 
                 query1.setMaxResults(limit);
             }
             list = query1.list();
-
             //đếm kích thước của list
             //select count(*) from getPersistenceClassName where property= :value
             StringBuilder sql2 = new StringBuilder("select count(*) from ");
             sql2.append(getPersistenceClassName());
-            if(property != null & value != null) {
-                sql2.append(" where ").append(property).append("= :value");
+            if(property.size() > 0 ) {
+                for(int j = 0; j < params.length ; j++){
+                    if(j == 0){
+                        sql2.append(" where ").append(params[j]).append("= :"+params[j]+"");
+                    }
+                    else {
+                        sql2.append(" and ").append(params[j]).append("= :"+params[j]+"");
+                    }
+                }
             }
             Query query2 = session.createQuery(sql2.toString());
-            if(value !=  null){
-                query2.setParameter("value",value);
+
+            if(property.size() > 0){
+                for(int j = 0; j < params.length ; j++){
+                    query2.setParameter(params[j],values[j]);
+                }
             }
             totalItem = query2.list().get(0);
             transaction.commit();

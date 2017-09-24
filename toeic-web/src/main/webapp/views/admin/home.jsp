@@ -6,7 +6,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>a<%--<fmt:message key="label.home" bundle="${lang}"/>--%></title>
+    <title><fmt:message key="label.admin" bundle="${lang}"/></title>
 </head>
 <body>
 <div class="main-content">
