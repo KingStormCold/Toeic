@@ -12,4 +12,7 @@ public class WebConstaint {
     public static final String ROLE_USER = "USER";
     public static final String FROM_ITEM = "item";
     public static final String LIST_ITEM = "items";
+    public static final String URL_LIST = "url_list";
+    public static final String URL_EDIT = "url_edit";
+    public static final String LISTENGUIDELINE = "listenguideline";
 }

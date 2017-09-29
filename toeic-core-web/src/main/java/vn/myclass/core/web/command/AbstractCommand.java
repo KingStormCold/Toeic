@@ -115,4 +115,12 @@ public class AbstractCommand<T> {
     public void setPage(int page) {
         this.page = page;
     }
+
+    public String getUrlType() {
+        return urlType;
+    }
+
+    public void setUrlType(String urlType) {
+        this.urlType = urlType;
+    }
 }

@@ -1,6 +1,7 @@
 <%@include file="/common/taglib.jsp"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <c:url var="loginController" value="login.html"/>
+
 <html>
 <head>
     <title>Login Page</title>

@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -32,10 +33,12 @@ public class LoginController extends HttpServlet {
         UserCommand command = FormUtil.populate(UserCommand.class, request);
         UserDTO pojo = command.getPojo();
         UserService userService = new UserServiceImpl();
+        HttpSession session = request.getSession();
         try{
             if(userService.isUserExist(pojo) != null){
                 if(userService.findRoleByUser(pojo) != null && userService.findRoleByUser(pojo).getRoleDTO() != null){
                     if(userService.findRoleByUser(pojo).getRoleDTO().getName().equals(WebConstaint.ROLE_ADMIN)) {
+                        session.setAttribute("pojo.name",pojo.getName());
                         response.sendRedirect("/admin-home.html");
                         return;
                     }
@@ -44,7 +47,6 @@ public class LoginController extends HttpServlet {
                         return;
                     }
                 }
-
             }
         }
         catch (NullPointerException e) {

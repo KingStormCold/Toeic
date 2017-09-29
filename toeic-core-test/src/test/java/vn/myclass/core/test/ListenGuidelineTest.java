@@ -26,11 +26,11 @@ public class ListenGuidelineTest {
 
     }*/
 
-    @Test
+/*    @Test
     public void checkApiFindByProperty() {
         Map<String,Object> property = new HashMap<String,Object>();
         property.put("title","Bai hd 7");
         property.put("context","Noi dung bai hd 7");
         Object[] objects = listenGuidelineDao.finByProperty(property,null,null,null,null);
-    }
+    }*/
 }
