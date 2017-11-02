@@ -79,7 +79,7 @@ public class ListenGuidelineController extends HttpServlet {
         UploadUtil uploadUtil = new UploadUtil();
         HttpSession session = request.getSession();
         Set<String> valueTitle = buildSetValueListenGuideline();
-        try {
+        /*try {
             Object[] objects = uploadUtil.writeOrUpdateFile(request,valueTitle,WebConstaint.LISTENGUIDELINE);
             //đưa dữ liệu từ jsp vào DTO
             Map<String, String> mapValue = (Map<String, String>) objects[3];
@@ -95,7 +95,7 @@ public class ListenGuidelineController extends HttpServlet {
             log.error(e.getMessage(),e);
             session.setAttribute(WebConstaint.ALERT,WebConstaint.TYPE_ERROR);
             session.setAttribute(WebConstaint.MESSAGE_RESPONSE, bundle.getString("label.error"));
-        }
+        }*/
         response.sendRedirect("/admin-guideline-listen-list.html?urlType=url_list");
     }
 

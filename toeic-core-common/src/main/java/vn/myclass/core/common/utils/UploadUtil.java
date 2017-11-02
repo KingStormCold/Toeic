@@ -5,6 +5,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -20,10 +21,10 @@ import java.util.Set;
 public class UploadUtil {
     private final int maxMemorySize = 1024 * 1024 * 3;//3Mb
     private final int maxRequestSize = 1024 * 1024 * 50;//50Mb
-
-    public Object[] writeOrUpdateFile(HttpServletRequest request, Set<String> titleValue, String path) throws FileUploadException,Exception {//co FileUploadException de hk bi treo may
+    private final Logger log = Logger.getLogger(this.getClass());
+    public Object[] writeOrUpdateFile(HttpServletRequest request, Set<String> titleValue, String path) {//co FileUploadException de hk bi treo may
         ServletContext context = request.getServletContext();
-        String address = context.getRealPath("image");
+        String address = context.getRealPath("uploadfile");
         boolean check = true;
         String fileLocation = null;
         String name = null;
@@ -47,38 +48,42 @@ public class UploadUtil {
 
         // Set overall request size constraint
         upload.setSizeMax(maxRequestSize);
-
-        List<FileItem> items = upload.parseRequest(request);
-        for(FileItem item:items) {
-            if(!item.isFormField()) {//if bang false thi no biet la dang uploadfile true thi la co textbox,checkbox...
-                name = item.getName();
-                if(StringUtils.isNotBlank(name)){
-                    File uploadFile = new File(address + File.separator + path + File.separator + name);
-                    fileLocation = address + File.separator + path + File.separator + name;
-                    name = name;
-                    boolean isExist = uploadFile.exists();
-                    if(isExist) {//neu ton tai se xoa va add moi vao
-                        if(uploadFile.delete()) {
-                            item.write(uploadFile);
-                        }
-                        else {
+        try{
+            List<FileItem> items = upload.parseRequest(request);
+            for(FileItem item:items) {
+                if(!item.isFormField()) {//if bang false thi no biet la dang uploadfile true thi la co textbox,checkbox...
+                    name = item.getName();
+                    if(StringUtils.isNotBlank(name)){
+                        File uploadFile = new File(address + File.separator + path + File.separator+ name);
+                        fileLocation = address + File.separator + path + File.separator + name;
+                        boolean isExist = uploadFile.exists();
+                        try {
+                            if(isExist) {//neu ton tai se xoa va add moi vao
+                                uploadFile.delete();
+                                item.write(uploadFile);
+                            }else {
+                                item.write(uploadFile);
+                            }
+                        } catch (Exception e) {
                             check = false;
+                            log.error(e.getMessage(),e);
                         }
                     }
-                    else {
-                        item.write(uploadFile);
+                }
+                else {
+                    if(titleValue != null) {
+                        String nameField = item.getFieldName();//lay name ben jsp nhu la pojo.name
+                        String valueField = item.getString();//lay gia tri cua name
+                        if(titleValue.contains(nameField)) {
+                            mapReturnValue.put(nameField,valueField);
+                        }
                     }
                 }
             }
-            else {
-                if(titleValue != null) {
-                    String nameField = item.getFieldName();//lay name ben jsp nhu la pojo.name
-                    String valueField = item.getString();//lay gia tri cua name
-                    if(titleValue.contains(nameField)) {
-                        mapReturnValue.put(nameField,valueField);
-                    }
-                }
-            }
-        } return  new Object[]{check,fileLocation, name, mapReturnValue};
+        } catch (FileUploadException e) {
+            check = false;
+            log.error(e.getMessage(),e);
+        }
+         return  new Object[]{check,fileLocation, name, mapReturnValue};
     }
 }

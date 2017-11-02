@@ -9,29 +9,53 @@ import vn.myclass.core.dao.UserDao;
 import vn.myclass.core.data.daoimpl.AbstractDao;
 import vn.myclass.core.persistence.entity.UserEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by TuanKul on 9/18/2017.
  */
 public class UserDaoImpl extends AbstractDao<Integer,UserEntity> implements UserDao {
-    public UserEntity findUserByUsernameAndPassword(String name, String password) {
-        UserEntity entity = new UserEntity();
+    public Object[] checkLogin(String name, String password) {
         Session session = HibernateUtil.getSesstionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        try{
-            //HQL
-            StringBuilder sql = new StringBuilder("FROM UserEntity WHERE name= :name AND password= :password");
+        boolean isUserExist = false;
+        String roleName = null;
+        try {
+            StringBuilder sql = new StringBuilder(" FROM UserEntity ue WHERE ue.name= :name AND ue.password= :password");
             Query query = session.createQuery(sql.toString());
-            query.setParameter("name",name);
-            query.setParameter("password",password);
-            entity = (UserEntity) query.uniqueResult();
-            transaction.commit();
-        }catch (HibernateException e) {
+            query.setParameter("name", name);
+            query.setParameter("password", password);
+            if(query.list().size() >0) {
+                isUserExist = true;
+                UserEntity userEntity = (UserEntity) query.uniqueResult();
+                roleName = userEntity.getRoleEntity().getName();
+            }
+
+        } catch (HibernateException e) {
             transaction.rollback();
-            throw  e;
-        }
-        finally {
+            throw e;
+        } finally {
             session.close();
         }
-        return entity;
+        return new Object[]{isUserExist,roleName};
+    }
+
+    public List<UserEntity> findByUsers(List<String> names) {
+        Session session = HibernateUtil.getSesstionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        List<UserEntity> userEntities = new ArrayList<UserEntity>();
+        try {
+            StringBuilder sql = new StringBuilder("FROM UserEntity ue WHERE ue.name IN(:names) ");
+            Query query = session.createQuery(sql.toString());
+            query.setParameterList("names", names);
+            userEntities = query.list();
+        } catch (HibernateException e) {
+            transaction.rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
+        return userEntities;
     }
 }

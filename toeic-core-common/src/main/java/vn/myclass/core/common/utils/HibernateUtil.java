@@ -5,9 +5,6 @@ import org.hibernate.SessionFactory;
 
 import javax.security.auth.login.Configuration;
 
-/**
- * Created by TuanKul on 9/6/2017.
- */
 public class HibernateUtil {
     private static final SessionFactory sesstionFactory = buildSessionFactory();
     private static SessionFactory buildSessionFactory(){
