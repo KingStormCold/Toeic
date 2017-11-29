@@ -9,6 +9,5 @@ import vn.myclass.core.web.command.AbstractCommand;
 public class ListenGuideLineCommand extends AbstractCommand<ListenGuidelineDTO> {
     public ListenGuideLineCommand() {
         this.pojo = new ListenGuidelineDTO();
-
     }
 }

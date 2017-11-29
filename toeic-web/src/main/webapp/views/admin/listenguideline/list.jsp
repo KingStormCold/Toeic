@@ -11,19 +11,20 @@
 </head>
 <body>
 <div class="main-content">
-    <div class="main-content-inner">
-        <div class="breadcrumbs" id="breadcrumbs">
-            <script type="text/javascript">
-                try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
-            </script>
+        <div class="main-content-inner">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                </script>
 
-            <ul class="breadcrumb">
-                <li>
-                    <i class="ace-icon fa fa-home home-icon"></i>
-                    <a href="#"><fmt:message key="label.web.home" bundle="${lang}"/></a>
-                </li>
-                <li class="active"><fmt:message key="label.guideline.listen.list" bundle="${lang}"/></li>
-            </ul><!-- /.breadcrumb -->
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="ace-icon fa fa-home home-icon"></i>
+                        <a href="#"><fmt:message key="label.web.home" bundle="${lang}"/></a>
+                    </li>
+                    <li class="active"><fmt:message key="label.guideline.listen.list" bundle="${lang}"/></li>
+                </ul><!-- /.breadcrumb -->
+            </div>
         </div>
         <div class="page-content">
             <div class="row">
@@ -62,7 +63,7 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-2 control-label"></label>
                                                     <div class="col-sm-8">
-                                                        <button id="btnSearch" type="button" class="btn btn-sm btn-success">
+                                                        <button id="btnSearch" class="btn btn-sm btn-success">
                                                             <fmt:message key="label.search" bundle="${lang}"/>
                                                             <i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
                                                         </button>
@@ -78,7 +79,7 @@
                                             <c:url var="addUrl" value="/admin-guideline-listen-edit.html">
                                                 <c:param name="urlType" value="url_edit"/>
                                             </c:url>
-                                            <a flag="info" class="dt-button buttons-colvis btn btn-white btn-primary btn-bold" onclick="update(this)">
+                                            <a flag="info" class="dt-button buttons-colvis btn btn-white btn-primary btn-bold" href="${addUrl}">
                                                     <span>
                                                         <i class="fa fa-plus-circle bigger-110 purple"></i>
                                                     </span>
@@ -95,7 +96,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <fmt:bundle basename="ApplicationResources">
+                            <fmt:bundle basename="ResourcesBundle">
                                 <display:table id="tableList" name="items.listResult" partialList="true" size="${items.totalItems}"
                                                pagesize="${items.maxPageItems}" export="true" sort="external" requestURI="${requestUrl}"
                                                class="table table-fcv-ace table-striped table-bordered table-hover dataTable no-footer"
@@ -108,15 +109,19 @@
                                         </fieldset>
                                     </display:column>
                                     <display:column property="title" titleKey="label.guideline.listen.title" sortable="true" sortName="title"/>
-                                    <display:column property="context" titleKey="label.guideline.listen.content" sortable="true" sortName="context"/>
+
                                     <display:column headerClass="col-actions" titleKey="label.action">
-                                        <a class="btn btn-sm btn-primary btn-edit" sc-url="${editUrl}" onclick="update(this)" data-toggle="tooltip" title="<fmt:message key='label.update' bundle='${lang}'/>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                                        <a class="btn btn-sm btn-danger btn-cancel" data-toggle="tooltip" title="<fmt:message key='label.delete' bundle='${lang}'/>"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                        <c:url var="editUrl" value="/admin-guideline-listen-edit.html">
+                                            <c:param name="urlType" value="url_edit"/>
+                                            <c:param name="pojo.listenguidelineId" value="${tableList.listenguidelineId}"/>
+                                        </c:url>
+                                        <a class="btn btn-sm btn-primary btn-edit" href="${editUrl}" data-toggle="tooltip" title="<fmt:message key='label.update' bundle='${lang}'/>"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                                     </display:column>
                                 </display:table>
                             </fmt:bundle>
                         </div>
                         <input type="hidden" name="urlType" id="urlType"/>
+                        <input type="hidden" name="crudaction" id="crudaction"/>
                     </form>
                 </div>
             </div>
@@ -130,6 +135,13 @@
             $('#formUrl').submit();
         });
     });
+    function warningBeforeDelete() {
+        showAlertBeforeDelete(function () {
+            $('#urlType').val('url_list');
+            $('#crudaction').val('redirect_delete');
+            $('#formUrl').submit();
+        });
+    }
 </script>
 </body>
 </html>

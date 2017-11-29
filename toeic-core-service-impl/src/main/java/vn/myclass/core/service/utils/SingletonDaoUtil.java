@@ -1,14 +1,17 @@
 package vn.myclass.core.service.utils;
 
 import vn.myclass.core.dao.RoleDao;
-import vn.myclass.core.daoimpl.ListenGuidelineDaoImpl;
-import vn.myclass.core.daoimpl.RoleDaoImpl;
-import vn.myclass.core.daoimpl.UserDaoImpl;
+import vn.myclass.core.daoimpl.*;
 
 public class SingletonDaoUtil {
     private static UserDaoImpl userDaoImpl = null;
     private static RoleDaoImpl roleDaoImpl = null;
     private static ListenGuidelineDaoImpl listenGuidelineDaoImpl = null;
+    private static CommentDaoImpl commentDaoImpl = null;
+    private static ExaminationDaoImpl examinationDaoImpl = null;
+    private static ExaminationQuestionDaoImpl examinationQuestionDaoImpl = null;
+    private static ExerciseDaoImpl exerciseDaoImpl = null;
+    private static ExerciseQuestionDaoImpl exerciseQuestionDaoImpl = null;
 
     public static UserDaoImpl getUserDaoInstance () {
         if (userDaoImpl == null) {
@@ -27,5 +30,39 @@ public class SingletonDaoUtil {
             listenGuidelineDaoImpl = new ListenGuidelineDaoImpl();
         }
         return listenGuidelineDaoImpl;
+    }
+    public static CommentDaoImpl getCommentDaoInstance() {
+        if (commentDaoImpl == null) {
+            commentDaoImpl = new CommentDaoImpl();
+        }
+        return commentDaoImpl;
+    }
+
+    public static ExaminationDaoImpl getExaminationDaoInstance() {
+        if (examinationDaoImpl == null) {
+            examinationDaoImpl = new ExaminationDaoImpl();
+        }
+        return examinationDaoImpl;
+    }
+
+    public static ExaminationQuestionDaoImpl getExaminationQuestionDaoInstance() {
+        if (examinationQuestionDaoImpl == null) {
+            examinationQuestionDaoImpl = new ExaminationQuestionDaoImpl();
+        }
+        return examinationQuestionDaoImpl;
+    }
+
+    public static ExerciseDaoImpl getExerciseDaoInstance() {
+        if (exerciseDaoImpl == null) {
+            exerciseDaoImpl = new ExerciseDaoImpl();
+        }
+        return exerciseDaoImpl;
+    }
+
+    public static ExerciseQuestionDaoImpl getExerciseQuestionDaoInstance() {
+        if (exerciseQuestionDaoImpl == null) {
+            exerciseQuestionDaoImpl = new ExerciseQuestionDaoImpl();
+        }
+        return exerciseQuestionDaoImpl;
     }
 }

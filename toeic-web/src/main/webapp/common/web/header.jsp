@@ -1,4 +1,4 @@
-<!--HEADER ROW-->
+<%@include file="/common/taglib.jsp" %>
 <div id="header-row">
     <div class="container">
         <div class="row">
@@ -26,9 +26,19 @@
                                 </li>
 
                                 <li><a href="service.html">Services</a></li>
-                                <li><a href="blog.html">Blog</a></li>
-                                <li><a href="contact.html">Contact</a></li>
-
+                                <c:if test="${not empty login_name}">
+                                    <li>Welcome: ${login_name}</li>
+                                    <c:url var="logoutUrl" value="logout.html">
+                                        <c:param name="action" value="logout"/>
+                                    </c:url>
+                                    <li><a href="${logoutUrl}">Logout</a></li>
+                                </c:if>
+                                <c:if test="${empty login_name}">
+                                    <c:url var="loginUrl" value="/login.html">
+                                        <c:param name="action" value="login"/>
+                                    </c:url>
+                                    <li><a href="${loginUrl}"><fmt:message key="label.login" bundle="${lang}"/> </a></li>
+                                </c:if>
                             </ul>
                         </div>
 

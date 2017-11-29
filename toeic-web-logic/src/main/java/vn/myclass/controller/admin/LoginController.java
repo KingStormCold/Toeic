@@ -2,6 +2,7 @@ package vn.myclass.controller.admin;
 
 import org.apache.log4j.Logger;
 import vn.myclass.command.UserCommand;
+import vn.myclass.core.common.utils.SessionUtil;
 import vn.myclass.core.dto.CheckLogin;
 import vn.myclass.core.dto.UserDTO;
 import vn.myclass.core.service.UserService;
@@ -22,15 +23,25 @@ import java.util.ResourceBundle;
 
 /**
  * Created by TuanKul on 9/18/2017.
- */
-@WebServlet("/login.html")
+ *///mullti url
+@WebServlet(urlPatterns = {"/login.html","/logout.html"})
 public class LoginController extends HttpServlet {
     private final Logger log = Logger.getLogger(this.getClass());
-    ResourceBundle bundle = ResourceBundle.getBundle("ApplicationResources");
+    ResourceBundle bundle = ResourceBundle.getBundle("ResourcesBundle");
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("/views/web/login.jsp");
-        rd.forward(request, response);
+        //trên url có 1 cái parameter có tên là action thì khi gọi request.getParameter sẽ lấy giá trị của action đó
+        //dựa vào action này là ta mún là login hay là logout
+        String action = request.getParameter("action");
+        if(action.equals(WebConstaint.LOGIN)) {
+            RequestDispatcher rd = request.getRequestDispatcher("/views/web/login.jsp");
+            rd.forward(request, response);
+        }
+        else if(action.equals(WebConstaint.LOGOUT)) {
+            SessionUtil.getInstance().remove(request,WebConstaint.LOGIN_NAME);
+            response.sendRedirect("/home.html");
+        }
+
     }
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -39,6 +50,7 @@ public class LoginController extends HttpServlet {
         if (pojo != null) {
             CheckLogin login = SingletonServiceUtil.getUserServiceInstance().checkLogin(pojo.getName(), pojo.getPassword());
             if(login.isUserExist()) {
+                SessionUtil.getInstance().putValue(request, WebConstaint.LOGIN_NAME, pojo.getName());
                 if(login.getRoleName().equals(WebConstaint.ROLE_ADMIN)) {
                     response.sendRedirect("/admin-home.html");
                 } else if(login.getRoleName().equals(WebConstaint.ROLE_USER)) {
@@ -51,28 +63,5 @@ public class LoginController extends HttpServlet {
                 rd.forward(request, response);
             }
         }
-        /*try{
-            if(SingletonServiceUtil.getUserServiceInstance().isUserExist(pojo) != null){
-                if(SingletonServiceUtil.getUserServiceInstance().findRoleByUser(pojo) != null
-                        && SingletonServiceUtil.getUserServiceInstance().findRoleByUser(pojo).getRoleDTO() != null){
-                    if(SingletonServiceUtil.getUserServiceInstance().findRoleByUser(pojo).getRoleDTO().getName().equals(WebConstaint.ROLE_ADMIN)) {
-                        session.setAttribute("pojo.name",pojo.getName());
-                        response.sendRedirect("/admin-home.html");
-                        return;
-                    }
-                    else if(SingletonServiceUtil.getUserServiceInstance().findRoleByUser(pojo).getRoleDTO().getName().equals(WebConstaint.ROLE_USER)){
-                        response.sendRedirect("home.html");
-                        return;
-                    }
-                }
-            }
-        }
-        catch (NullPointerException e) {
-            log.error(e.getMessage(),e);
-            request.setAttribute(WebConstaint.ALERT,WebConstaint.TYPE_ERROR);
-            request.setAttribute(WebConstaint.MESSAGE_RESPONSE,"Tài khoản hoặc mật khẩu không đúng!!");
-        }
-        RequestDispatcher rd = request.getRequestDispatcher("/views/web/login.jsp");
-        rd.forward(request, response);*/
     }
 }

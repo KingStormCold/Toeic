@@ -45,7 +45,7 @@ public class UserController extends HttpServlet {
     private final String VALIDATE_IMPORT = "validate_import";
     private final String LIST_USER_IMPORT = "list_user_import";
     private final String IMPORT_DATA = "import_data";
-    ResourceBundle bundle = ResourceBundle.getBundle("ApplicationResources");
+    ResourceBundle bundle = ResourceBundle.getBundle("ResourcesBundle");
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         UserCommand command = FormUtil.populate(UserCommand.class,request);
@@ -80,7 +80,7 @@ public class UserController extends HttpServlet {
             command.setUserImportDTOS(userImportDTOS);
             command.setTotalItems(userImportDTOS.size());
             request.setAttribute(WebConstaint.LIST_ITEM, command);
-            //command.setTotalItems(Integer.parseInt(objects[0].toString()));//a hôm qua nó hk chạy đc cái e set totalitem lần nữa.đây nek a
+            command.setTotalItems(Integer.parseInt(objects[0].toString()));//a hôm qua nó hk chạy đc cái e set totalitem lần nữa.đây nek a
             RequestDispatcher rd = request.getRequestDispatcher("/views/admin/user/importuser.jsp");
             rd.forward(request, response);
         }
@@ -88,9 +88,9 @@ public class UserController extends HttpServlet {
 
     private Map<String,String> buidMapRedirectMessage(ResourceBundle bundle) {
         Map<String,String> mapMessage = new HashMap<String, String>();
-        mapMessage.put(WebConstaint.REDIRECT_INSERT, bundle.getString("label.user.message.insert"));
-        mapMessage.put(WebConstaint.REDIRECT_UPDATE, bundle.getString("label.user.message.update"));
-        mapMessage.put(WebConstaint.REDIRECT_DELETE, bundle.getString("label.user.message.delete"));
+        mapMessage.put(WebConstaint.REDIRECT_INSERT, bundle.getString("label.message.insert"));
+        mapMessage.put(WebConstaint.REDIRECT_UPDATE, bundle.getString("label.message.update"));
+        mapMessage.put(WebConstaint.REDIRECT_DELETE, bundle.getString("label.message.delete"));
         mapMessage.put(WebConstaint.REDIRECT_ERROR, bundle.getString("label.message.error"));
         return mapMessage;
     }

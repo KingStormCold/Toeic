@@ -1,5 +1,6 @@
 package vn.myclass.core.service.impl;
 
+import org.hibernate.exception.ConstraintViolationException;
 import vn.myclass.core.dao.ListenGuidelineDao;
 import vn.myclass.core.daoimpl.ListenGuidelineDaoImpl;
 import vn.myclass.core.dto.ListenGuidelineDTO;
@@ -8,6 +9,7 @@ import vn.myclass.core.service.ListenGuidelineService;
 import vn.myclass.core.service.utils.SingletonDaoUtil;
 import vn.myclass.core.util.ListenGuidelineUtil;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,33 @@ public class ListenGuidelineServiceImpl implements ListenGuidelineService {
         }
         objects[1] = result;
         return objects;
+    }
+
+    public ListenGuidelineDTO findByListenGuidelineId(String property, Integer listenGuidelineId) {
+        ListenGuidelineEntity entity = SingletonDaoUtil.getListenGuidelineDaoInstance().findEqualUnique(property,listenGuidelineId);
+        ListenGuidelineDTO dto = ListenGuidelineUtil.entity2Dto(entity);
+        return dto;
+    }
+
+    public void saveListenGuideline(ListenGuidelineDTO dto) throws ConstraintViolationException {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        dto.setCreatedDate(timestamp);
+        ListenGuidelineEntity entity = ListenGuidelineUtil.dto2Entity(dto);
+        SingletonDaoUtil.getListenGuidelineDaoInstance().save(entity);
+    }
+
+    public ListenGuidelineDTO updateListenGuideLine(ListenGuidelineDTO dto) {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        dto.setCreatedDate(timestamp);
+        ListenGuidelineEntity entity = ListenGuidelineUtil.dto2Entity(dto);
+        entity = SingletonDaoUtil.getListenGuidelineDaoInstance().update(entity);
+        dto = ListenGuidelineUtil.entity2Dto(entity);
+        return dto;
+    }
+
+    public Integer delete(List<Integer> ids) {
+        Integer result = SingletonDaoUtil.getListenGuidelineDaoInstance().delete(ids);
+        return result;
     }
     //cần truyền vào 4 tham số
     //sortExpression tên column muốn sort

@@ -1,6 +1,7 @@
 package vn.myclass.core.data.daoimpl;
 
 import javassist.tools.rmi.ObjectNotFoundException;
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -20,7 +21,7 @@ import java.util.Map;
  */
 public class AbstractDao<ID extends Serializable,T> implements GenericDao<ID,T> {
     private Class<T> persistenceClass;
-
+    private final Logger log = Logger.getLogger(this.getClass());
     public AbstractDao() {
         //ParameterizedType là get tất cả tham số của AbstractDao vào
         //AbstractDao<ID,T> nó là 1 cái mảng T là class nên getActualTypeArguments lấy ra vị trí 1 là T để lấy ra dc EntityClass
@@ -47,6 +48,7 @@ public class AbstractDao<ID extends Serializable,T> implements GenericDao<ID,T> 
             transaction.commit();
         }catch (HibernateException e) {
             transaction.rollback();
+            log.error(e.getMessage(),e);
             throw  e;
         }
         finally {
@@ -67,6 +69,7 @@ public class AbstractDao<ID extends Serializable,T> implements GenericDao<ID,T> 
         catch (HibernateException e)
         {
             transaction.rollback();
+            log.error(e.getMessage(),e);
             throw e;
         }
         finally {
@@ -85,6 +88,7 @@ public class AbstractDao<ID extends Serializable,T> implements GenericDao<ID,T> 
         catch (HibernateException e)
         {
             transaction.rollback();
+            log.error(e.getMessage(),e);
             throw e;
         }
         finally {
@@ -104,6 +108,7 @@ public class AbstractDao<ID extends Serializable,T> implements GenericDao<ID,T> 
             transaction.commit();
         }catch (HibernateException e) {
             transaction.rollback();
+            log.error(e.getMessage(),e);
             throw e;
         } catch (ObjectNotFoundException e) {
             e.printStackTrace();
@@ -131,15 +136,10 @@ public class AbstractDao<ID extends Serializable,T> implements GenericDao<ID,T> 
         try {
             // from UserEntity where property= : value order by sortExpression sortDirection
             StringBuilder sql1 = new StringBuilder("from ");
-            sql1.append(getPersistenceClassName());
+            sql1.append(getPersistenceClassName()).append(" where 1=1 ");
             if(property.size() > 0 ) {
                 for(int j = 0; j < params.length ; j++){
-                    if(j == 0){
-                        sql1.append(" where ").append(params[j]).append("= :"+params[j]+"");
-                    }
-                    else {
-                        sql1.append(" and ").append(params[j]).append("= :"+params[j]+"");
-                    }
+                    sql1.append(" and ").append("LOWER("+params[j]+") LIKE '%' || :"+params[j]+" || '%'");
                 }
             }
             /*if(property != null & value != null) {
@@ -165,14 +165,11 @@ public class AbstractDao<ID extends Serializable,T> implements GenericDao<ID,T> 
             //đếm kích thước của list
             //select count(*) from getPersistenceClassName where property= :value
             StringBuilder sql2 = new StringBuilder("select count(*) from ");
-            sql2.append(getPersistenceClassName());
+            sql2.append(getPersistenceClassName()).append(" where 1=1 ");
             if(property.size() > 0 ) {
                 for(int j = 0; j < params.length ; j++){
-                    if(j == 0){
-                        sql2.append(" where ").append(params[j]).append("= :"+params[j]+"");
-                    }
-                    else {
-                        sql2.append(" and ").append(params[j]).append("= :"+params[j]+"");
+                    if(j == 0) {
+                        sql2.append(" and ").append("LOWER("+params[j]+") LIKE '%' || :"+params[j]+" || '%'");
                     }
                 }
             }
@@ -187,6 +184,7 @@ public class AbstractDao<ID extends Serializable,T> implements GenericDao<ID,T> 
             transaction.commit();
         } catch (HibernateException e) {
             transaction.rollback();
+            log.error(e.getMessage(),e);
             throw e;
         }
         finally {
@@ -208,6 +206,7 @@ public class AbstractDao<ID extends Serializable,T> implements GenericDao<ID,T> 
             transaction.commit();
         }catch (HibernateException e) {
             transaction.rollback();
+            log.error(e.getMessage(),e);
             throw e;
         } finally {
             session.close();
@@ -226,6 +225,7 @@ public class AbstractDao<ID extends Serializable,T> implements GenericDao<ID,T> 
             result = (T) query.uniqueResult();
         }catch (HibernateException e) {
             transaction.rollback();
+            log.error(e.getMessage(),e);
             throw e;
         } finally {
             session.close();

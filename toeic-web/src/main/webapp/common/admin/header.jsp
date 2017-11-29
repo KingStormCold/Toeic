@@ -17,21 +17,14 @@
         <div class="navbar-buttons navbar-header pull-right collapse navbar-collapse" role="navigation">
             <ul class="nav ace-nav">
                 <li class="light-blue dropdown-modal">
-                    <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                        <% if(session.getAttribute("pojo.name") != null) {
-                        %>
-                            <p>Welcome <%=session.getAttribute("pojo.name")%></p>
-                        <%
-                            }
-                        %>
+                    <c:if test="${not empty login_name}">
+                        <li>Welcome: ${login_name}</li>
+                        <c:url var="logoutUrl" value="logout.html">
+                            <c:param name="action" value="logout"/>
+                        </c:url>
+                        <li><a href="${logoutUrl}">Logout</a></li>
+                    </c:if>
 
-                    </a>
-                <li class="light-blue dropdown-modal">
-                    <a href="${logoutController}">
-                        <i class="ace-icon fa fa-power-off"></i>
-                        <fmt:message key="label.logout" bundle="${lang}"/>
-                    </a>
-                </li>
                 </li>
             </ul>
         </div>
